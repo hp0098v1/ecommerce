@@ -1,0 +1,200 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* -------------------------------------------------------------------------- */
+    /*                                 Font Stack                                 */
+    /* -------------------------------------------------------------------------- */
+    --font-family-poppins: "Poppins", sans-serif;
+
+    /* -------------------------------------------------------------------------- */
+    /*                                 Typography                                 */
+    /* -------------------------------------------------------------------------- */
+    --font-size-xs: clamp(0.52rem, 0.19vw + 0.48rem, 0.63rem);
+    --font-size-sm: clamp(0.65rem, 0.32vw + 0.58rem, 0.84rem);
+    --font-size-base: clamp(0.81rem, 0.52vw + 0.71rem, 1.13rem);
+    --font-size-md: clamp(1.02rem, 0.81vw + 0.85rem, 1.5rem);
+    --font-size-lg: clamp(1.27rem, 1.22vw + 1.02rem, 2rem);
+    --font-size-xl: clamp(1.59rem, 1.81vw + 1.22rem, 2.66rem);
+    --font-size-xxl: clamp(1.98rem, 2.63vw + 1.45rem, 3.55rem);
+    --font-size-xxxl: clamp(2.48rem, 3.78vw + 1.71rem, 4.73rem);
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   Colors                                   */
+    /* -------------------------------------------------------------------------- */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --gray-color: #f1f1f1;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  body {
+    @apply bg-background text-foreground text-sm lg:text-base font-normal font-poppins;
+  }
+  a {
+    font-size: inherit;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 Typography                                 */
+  /* -------------------------------------------------------------------------- */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply m-0 font-semibold;
+  }
+
+  .h1-bold {
+    @apply text-4xl lg:text-6xl font-bold;
+  }
+
+  .h2-bold {
+    @apply text-3xl lg:text-5xl font-bold;
+  }
+
+  .h3-bold {
+    @apply text-2xl lg:text-4xl font-bold;
+  }
+
+  .h4-bold {
+    @apply text-xl lg:text-3xl font-bold;
+  }
+
+  .h4-normal {
+    @apply text-xl lg:text-3xl font-normal tracking-normal;
+  }
+
+  .h5-bold {
+    @apply text-lg lg:text-2xl font-bold;
+  }
+
+  .h6 {
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: bold;
+  }
+
+  .base {
+    @apply text-sm lg:text-base font-normal;
+  }
+
+  .base-large {
+    @apply text-lg lg:text-2xl;
+  }
+
+  .small {
+    @apply text-xs lg:text-base;
+  }
+
+  .label {
+    @apply text-xs lg:text-base uppercase;
+  }
+}
+
+@layer utilities {
+  /* -------------------------------------------------------------------------- */
+  /*                                  Utilities                                 */
+  /* -------------------------------------------------------------------------- */
+  .common-container {
+    @apply max-w-[1920px] px-[24px] lg:px-[11vw] mx-auto;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 Inclusions                                 */
+  /* -------------------------------------------------------------------------- */
+  .inclusions {
+    @apply grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 justify-center gap-8 common-container;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Hamburger Menu                               */
+  /* -------------------------------------------------------------------------- */
+  .hamburger-menu {
+    @apply relative z-50 block md:hidden;
+  }
+
+  .hamburger-menu__trigger {
+    @apply cursor-pointer;
+  }
+
+  .hamburger-menu__list {
+    @apply absolute z-50 top-6 right-0 shadow-lg flex-col gap-6 rounded-lg p-8 text-sm text-right whitespace-nowrap bg-background/90;
+  }
+
+  .footer {
+    @apply -z-10 py-12 flex items-center flex-col md:flex-row md:justify-between gap-6;
+  }
+
+  .footer__social-list {
+    @apply flex gap-12 lg:gap-16;
+  }
+}
