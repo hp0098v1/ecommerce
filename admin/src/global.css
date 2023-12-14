@@ -9,6 +9,7 @@
     --font-family-poppins: "Poppins", sans-serif;
 
     --background: 0 0% 100%;
+    --nav-background: 0, 0%, 96%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -41,6 +42,7 @@
 
   .dark {
     --background: 222.2 84% 4.9%;
+    --nav-background: 222, 46%, 11%;
     --foreground: 210 40% 98%;
 
     --card: 222.2 84% 4.9%;
@@ -81,7 +83,7 @@
 
 @layer utilities {
   .section-title {
-    @apply text-2xl lg:text-4xl font-semibold;
+    @apply text-2xl lg:text-3xl font-semibold;
   }
 
   .section-subtitle {
