@@ -10,13 +10,13 @@ const {
 // Public routes
 router.post("/register", userController.register);
 router.post("/login", userController.login);
+router.get("/refresh", userController.refresh);
+router.get("/logout", userController.logout);
 
 // Protected routes
 router.use(authenticateToken);
 router.get("/me/:userId", userController.getMe);
 router.put("/me/:userId", userController.updateUser);
-router.get("/refresh", userController.refresh);
-router.get("/logout", userController.logout);
 
 // Admin routes
 router.use(authorizeAdmin);
