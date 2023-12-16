@@ -2,6 +2,10 @@ const _ = require("lodash");
 
 const Product = require("../models/Product");
 const { errorHandler } = require("../lib/utils/errorHandler");
+const {
+  createProductValidation,
+  updateProductValidation,
+} = require("../lib/validations/productValidations");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -34,6 +38,10 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
+    const { error } = createProductValidation.validate(req.body);
+
+    if (error) return errorHandler(res, 400, error?.message);
+
     const { name, price, description, imageId } = req.body;
 
     const newProduct = new Product({
@@ -56,6 +64,9 @@ const updateProduct = async (req, res) => {
     const { name, description, price, imageId } = req.body;
 
     // check req.body validation
+    const { error } = updateProductValidation.validate(req.body);
+
+    if (error) return errorHandler(res, 400, error?.message);
 
     // update product
     const oldProduct = await Product.findById(productId);
