@@ -5,11 +5,10 @@ const cors = require("cors");
 const path = require("path");
 
 const connectDB = require("./config/dbConn");
+const errorMiddleware = require("./middlewares/errorMiddleware");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
-const fileRoutes = require("./routes/fileRoutes");
-const errorMiddleware = require("./middlewares/errorMiddleware");
-// const categoryRoutes = require("./routes/categoryRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 // const adminRoutes = require("./routes/adminRoutes");
 
 require("dotenv").config();
@@ -26,8 +25,7 @@ app.use(cors());
 connectDB();
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
-app.use("/files", fileRoutes);
-// app.use("/categories", categoryRoutes);
+app.use("/categories", categoryRoutes);
 // app.use("/admin", adminRoutes);
 
 app.use(errorMiddleware);

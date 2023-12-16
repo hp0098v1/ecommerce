@@ -1,11 +1,13 @@
 const _ = require("lodash");
 
 const Product = require("../models/Product");
+const Image = require("../models/Image");
 const { errorHandler } = require("../lib/utils/errorHandler");
 const {
   createProductValidation,
   updateProductValidation,
 } = require("../lib/validations/productValidations");
+const { saveImage, deleteImage } = require("../lib/utils/imageHelper");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -42,14 +44,24 @@ const createProduct = async (req, res) => {
 
     if (error) return errorHandler(res, 400, error?.message);
 
-    const { name, price, description, imageId } = req.body;
+    const { name, price, description } = req.body;
 
     const newProduct = new Product({
       name,
       price,
       description,
-      image: imageId,
     });
+
+    if (!newProduct) return errorHandler(res, 400, "Product creation failed!");
+
+    const image = await saveImage({
+      filename: req.file.filename,
+      path: req.file.path,
+      imageableId: newProduct._id,
+      imageableType: "Product",
+    });
+
+    newProduct.image = image._id;
     await newProduct.save();
 
     res.status(201).json({ message: "Product added successfuly!" });
@@ -61,7 +73,8 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const { name, description, price, imageId } = req.body;
+    const { name, description, price } = req.body;
+    const image = req.file;
 
     // check req.body validation
     const { error } = updateProductValidation.validate(req.body);
@@ -69,15 +82,20 @@ const updateProduct = async (req, res) => {
     if (error) return errorHandler(res, 400, error?.message);
 
     // update product
-    const oldProduct = await Product.findById(productId);
+    const oldProduct = await Product.findById(productId).populate("image");
     if (!oldProduct) return errorHandler(res, 400, "Product not found!");
 
     if (name) oldProduct.name = name;
     if (description) oldProduct.description = description;
     if (price) oldProduct.price = price;
-    if (imageId) oldProduct.image = imageId;
+    if (image) {
+      deleteImage(oldProduct.image._id, oldProduct.image.path);
 
-    const newProduct = await oldProduct.save();
+      const newImage = await saveImage(image);
+      oldProduct.image = newImage._id;
+    }
+
+    await oldProduct.save();
     res.status(200).json({ message: "Product updated successfuly." });
   } catch (error) {
     errorHandler(res, 400, error.message);
@@ -88,9 +106,13 @@ const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
 
-    const deletedProduct = await Product.findByIdAndDelete(productId);
+    const deletedProduct = await Product.findByIdAndDelete(productId).populate(
+      "image"
+    );
 
     if (!deletedProduct) return errorHandler(res, 400, "Product not found!");
+
+    await deleteImage(deletedProduct.image._id, deletedProduct.image.path);
 
     res.status(200).json({ message: "Product deleted successfuly." });
   } catch (error) {

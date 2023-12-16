@@ -12,7 +12,7 @@ const createProductValidation = Joi.object({
 const updateProductValidation = Joi.object({
   name: Joi.string().min(2),
   description: Joi.string().min(2),
-  price: Joi.number().required(),
+  price: Joi.number(),
   image: Joi.objectId(),
   category: Joi.objectId(),
 });
