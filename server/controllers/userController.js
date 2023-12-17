@@ -42,12 +42,13 @@ const register = async (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, { httpOnly: true });
+    req.user = _.omit(user.toObject(), ["password"]);
 
     const sanitizedUser = _.omit(user.toObject(), ["password"]);
     res.status(201).json({
       user: sanitizedUser,
+      accessToken,
     });
   } catch (error) {
     errorHandler(res, 400, error?.message);
@@ -73,12 +74,13 @@ const login = async (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, { httpOnly: true });
+    req.user = _.omit(user.toObject(), ["password"]);
 
     const sanitizedUser = _.omit(user.toObject(), ["password"]);
     res.status(200).json({
       user: sanitizedUser,
+      accessToken,
     });
   } catch (error) {
     errorHandler(res, 400, error?.message);
@@ -109,8 +111,7 @@ const refresh = async (req, res) => {
     }
 
     const newAccessToken = generateAccessToken(user);
-    res.cookie("accessToken", newAccessToken, { httpOnly: true });
-    res.send("New access token generated successfully.");
+    res.json({ accessToken: newAccessToken });
   });
 };
 
