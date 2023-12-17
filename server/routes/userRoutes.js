@@ -16,7 +16,7 @@ router.get("/logout", userController.logout);
 
 // Protected routes
 router.use(authenticateToken);
-router.get("/me/:userId", userController.getMe);
+router.get("/me", userController.getMe);
 router.put(
   "/me/:userId",
   uploadUser.single("imageUrl"),
