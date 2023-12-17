@@ -1,3 +1,3 @@
 # Title
 
-Teach Heaven Ecommerce - Admin Dashboard
+Teach Heaven Ecommerce - Admin

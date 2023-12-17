@@ -1,12 +1,7 @@
-import { ThemeProvider } from "./context/ThemeContext";
-import Router from "./pages";
+import React from "react";
 
 const App = () => {
-  return (
-    <ThemeProvider>
-      <Router />
-    </ThemeProvider>
-  );
+  return <div>App</div>;
 };
 
 export default App;
