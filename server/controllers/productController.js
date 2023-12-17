@@ -16,7 +16,7 @@ const getAllProducts = async (req, res) => {
     if (products.length === 0)
       return res.status(200).json({ message: "No Product found!" });
 
-    res.status(200).json(products);
+    res.status(200).json({ products });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -32,7 +32,7 @@ const getProductById = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    res.json(product);
+    res.status(200).json({ product });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -63,7 +63,7 @@ const createProduct = async (req, res) => {
 
     await newProduct.save();
 
-    res.status(201).json({ message: "Product added successfuly!" });
+    res.status(201).json({ product: newProduct });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -101,7 +101,7 @@ const updateProduct = async (req, res) => {
     }
 
     await oldProduct.save();
-    res.status(200).json({ message: "Product updated successfuly." });
+    res.status(200).json({ product: oldProduct });
   } catch (error) {
     errorHandler(res, 400, error.message);
   }

@@ -9,7 +9,7 @@ const getAllCategories = async (req, res) => {
     if (categories.length === 0)
       return res.status(200).json({ message: "No Category found!" });
 
-    res.status(200).json(categories);
+    res.status(200).json({ categories });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -25,7 +25,7 @@ const getCategoryById = async (req, res) => {
       return res.status(404).json({ error: "Category not found" });
     }
 
-    res.json(category);
+    res.json({ category });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -45,7 +45,7 @@ const createCategory = async (req, res) => {
 
     await newCategory.save();
 
-    res.status(201).json({ message: "Category added successfuly!" });
+    res.status(201).json({ category: newCategory });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -67,7 +67,7 @@ const updateCategory = async (req, res) => {
     }
 
     await oldCategory.save();
-    res.status(200).json({ message: "Category updated successfuly." });
+    res.status(200).json({ category: oldCategory });
   } catch (error) {
     errorHandler(res, 400, error.message);
   }
