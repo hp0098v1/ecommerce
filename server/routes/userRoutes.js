@@ -6,6 +6,7 @@ const {
   authenticateToken,
   authorizeAdmin,
 } = require("../middlewares/authMiddleware");
+const { uploadUser } = require("../middlewares/uploadMiddleware");
 
 // Public routes
 router.post("/register", userController.register);
@@ -16,7 +17,11 @@ router.get("/logout", userController.logout);
 // Protected routes
 router.use(authenticateToken);
 router.get("/me/:userId", userController.getMe);
-router.put("/me/:userId", userController.updateUser);
+router.put(
+  "/me/:userId",
+  uploadUser.single("imageUrl"),
+  userController.updateUser
+);
 
 // Admin routes
 router.use(authorizeAdmin);
