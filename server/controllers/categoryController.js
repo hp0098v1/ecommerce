@@ -1,12 +1,10 @@
-const _ = require("lodash");
-
 const Category = require("../models/Category");
 const { errorHandler } = require("../lib/utils/errorHandler");
-const { saveImage, deleteImage } = require("../lib/utils/imageHelper");
+const deleteFileMiddleware = require("../middlewares/deleteFileMiddleware");
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find().populate("image");
+    const categories = await Category.find();
 
     if (categories.length === 0)
       return res.status(200).json({ message: "No Category found!" });
@@ -21,7 +19,7 @@ const getCategoryById = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
 
-    const category = await Product.findById(categoryId).populate("image");
+    const category = await Category.findById(categoryId);
 
     if (!category) {
       return res.status(404).json({ error: "Category not found" });
@@ -36,23 +34,15 @@ const getCategoryById = async (req, res) => {
 const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    const image = req.file;
+    const imageUrl = req.file.path;
 
     if (!name) return errorHandler(res, 400, "Please provide a name");
 
     const newCategory = new Category({
       name,
+      imageUrl,
     });
 
-    // Save image to db
-    const newImage = await saveImage({
-      filename: image.filename,
-      path: image.path,
-      imageableId: newCategory._id,
-      imageableType: "Category",
-    });
-
-    newCategory.image = newImage._id;
     await newCategory.save();
 
     res.status(201).json({ message: "Category added successfuly!" });
@@ -64,17 +54,16 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    const image = req.file;
+    const imageUrl = req.file.path;
     const categoryId = req.params.categoryId;
 
-    const oldCategory = await Category.findById(categoryId).populate("image");
+    const oldCategory = await Category.findById(categoryId);
 
     if (name) oldCategory.name = name;
-    if (image) {
-      deleteImage(oldCategory.image._id, oldCategory.image.path);
+    if (imageUrl) {
+      deleteFileMiddleware(oldCategory.imageUrl);
 
-      const newImage = await saveImage(image);
-      oldCategory.image = newImage._id;
+      oldCategory.imageUrl = imageUrl;
     }
 
     await oldCategory.save();
@@ -88,12 +77,10 @@ const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
 
-    const deletedCategory = await Category.findByIdAndDelete(
-      categoryId
-    ).populate("image");
+    const deletedCategory = await Category.findByIdAndDelete(categoryId);
     if (!deletedCategory) return errorHandler(res, 400, "Category not found!");
 
-    await deleteImage(deletedCategory.image._id, deletedCategory.image.path);
+    deleteFileMiddleware(deletedCategory.imageUrl);
 
     res.status(200).json({ message: "Category deleted successfuly." });
   } catch (error) {

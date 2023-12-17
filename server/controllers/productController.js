@@ -1,17 +1,17 @@
 const _ = require("lodash");
 
 const Product = require("../models/Product");
-const Image = require("../models/Image");
+const Category = require("../models/Category");
 const { errorHandler } = require("../lib/utils/errorHandler");
 const {
   createProductValidation,
   updateProductValidation,
 } = require("../lib/validations/productValidations");
-const { saveImage, deleteImage } = require("../lib/utils/imageHelper");
+const deleteFileMiddleware = require("../middlewares/deleteFileMiddleware");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate("image");
+    const products = await Product.find();
 
     if (products.length === 0)
       return res.status(200).json({ message: "No Product found!" });
@@ -26,7 +26,7 @@ const getProductById = async (req, res) => {
   try {
     const productId = req.params.productId;
 
-    const product = await Product.findById(productId).populate("image");
+    const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
@@ -44,24 +44,23 @@ const createProduct = async (req, res) => {
 
     if (error) return errorHandler(res, 400, error?.message);
 
-    const { name, price, description } = req.body;
+    const { name, price, description, inStuck, categoryId } = req.body;
+    const imageUrl = req.file.path;
+
+    const categoryExist = await Category.findById(categoryId);
+    if (!categoryExist) return errorHandler(res, 400, "Category not found!");
 
     const newProduct = new Product({
       name,
       price,
       description,
+      inStuck,
+      categoryId,
+      imageUrl,
     });
 
     if (!newProduct) return errorHandler(res, 400, "Product creation failed!");
 
-    const image = await saveImage({
-      filename: req.file.filename,
-      path: req.file.path,
-      imageableId: newProduct._id,
-      imageableType: "Product",
-    });
-
-    newProduct.image = image._id;
     await newProduct.save();
 
     res.status(201).json({ message: "Product added successfuly!" });
@@ -73,8 +72,8 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const { name, description, price } = req.body;
-    const image = req.file;
+    const { name, description, price, inStuck, categoryId } = req.body;
+    const imageUrl = req.file.path;
 
     // check req.body validation
     const { error } = updateProductValidation.validate(req.body);
@@ -82,17 +81,23 @@ const updateProduct = async (req, res) => {
     if (error) return errorHandler(res, 400, error?.message);
 
     // update product
-    const oldProduct = await Product.findById(productId).populate("image");
+    const oldProduct = await Product.findById(productId);
     if (!oldProduct) return errorHandler(res, 400, "Product not found!");
 
     if (name) oldProduct.name = name;
     if (description) oldProduct.description = description;
     if (price) oldProduct.price = price;
-    if (image) {
-      deleteImage(oldProduct.image._id, oldProduct.image.path);
+    if (inStuck) oldProduct.inStuck = inStuck;
+    if (categoryId) {
+      const categoryExist = await Category.findById(categoryId);
+      if (!categoryExist) return errorHandler(res, 400, "Category not found!");
 
-      const newImage = await saveImage(image);
-      oldProduct.image = newImage._id;
+      oldProduct.categoryId = categoryId;
+    }
+    if (imageUrl) {
+      deleteFileMiddleware(oldProduct.imageUrl);
+
+      oldProduct.imageUrl = imageUrl;
     }
 
     await oldProduct.save();
@@ -106,13 +111,10 @@ const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
 
-    const deletedProduct = await Product.findByIdAndDelete(productId).populate(
-      "image"
-    );
+    const deletedProduct = await Product.findByIdAndDelete(productId);
 
     if (!deletedProduct) return errorHandler(res, 400, "Product not found!");
-
-    await deleteImage(deletedProduct.image._id, deletedProduct.image.path);
+    deleteFileMiddleware(deletedProduct.imageUrl);
 
     res.status(200).json({ message: "Product deleted successfuly." });
   } catch (error) {

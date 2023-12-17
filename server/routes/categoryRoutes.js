@@ -6,17 +6,21 @@ const {
   authenticateToken,
   authorizeAdmin,
 } = require("../middlewares/authMiddleware");
-const upload = require("../middlewares/uploadMiddleware");
+const { uploadCategory } = require("../middlewares/uploadMiddleware");
 
 router.get("/", categoryController.getAllCategories);
 router.get("/:categoryId", categoryController.getCategoryById);
 
 router.use(authenticateToken);
 router.use(authorizeAdmin);
-router.post("/", upload.single("image"), categoryController.createCategory);
+router.post(
+  "/",
+  uploadCategory.single("imageUrl"),
+  categoryController.createCategory
+);
 router.put(
   "/:categoryId",
-  upload.single("image"),
+  uploadCategory.single("imageUrl"),
   categoryController.updateCategory
 );
 router.delete("/:categoryId", categoryController.deleteCategory);
