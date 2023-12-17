@@ -5,16 +5,16 @@ const createProductValidation = Joi.object({
   name: Joi.string().min(2).required(),
   description: Joi.string().min(2).required(),
   price: Joi.number().required(),
-  image: Joi.objectId(),
-  category: Joi.objectId(),
+  inStuck: Joi.boolean().required(),
+  categoryId: Joi.objectId().required(),
 });
 
 const updateProductValidation = Joi.object({
   name: Joi.string().min(2),
   description: Joi.string().min(2),
   price: Joi.number(),
-  image: Joi.objectId(),
-  category: Joi.objectId(),
+  inStuck: Joi.boolean(),
+  categoryId: Joi.objectId(),
 });
 
 module.exports = { createProductValidation, updateProductValidation };

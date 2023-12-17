@@ -6,7 +6,7 @@ const {
   authenticateToken,
   authorizeAdmin,
 } = require("../middlewares/authMiddleware");
-const upload = require("../middlewares/uploadMiddleware");
+const { uploadProduct } = require("../middlewares/uploadMiddleware");
 
 // Public routes
 router.get("/", productController.getAllProducts);
@@ -17,10 +17,14 @@ router.use(authenticateToken);
 
 // Admin routes
 router.use(authorizeAdmin);
-router.post("/", upload.single("image"), productController.createProduct);
+router.post(
+  "/",
+  uploadProduct.single("imageUrl"),
+  productController.createProduct
+);
 router.put(
   "/:productId",
-  upload.single("image"),
+  uploadProduct.single("imageUrl"),
   productController.updateProduct
 );
 router.delete("/:productId", productController.deleteProduct);

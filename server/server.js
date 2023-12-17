@@ -16,7 +16,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

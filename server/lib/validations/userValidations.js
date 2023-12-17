@@ -1,9 +1,11 @@
 const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 
 const registerValidation = Joi.object({
   username: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
+  profile: Joi.objectId(),
 });
 
 const loginValidation = Joi.object({
@@ -20,6 +22,7 @@ const updateUserValidation = Joi.object({
     then: Joi.string().min(8).required(),
     otherwise: Joi.forbidden(), // This ensures that currentpassword is not present if password is not present
   }),
+  profile: Joi.objectId(),
 });
 
 module.exports = { registerValidation, loginValidation, updateUserValidation };

@@ -14,6 +14,7 @@ const {
   loginValidation,
   updateUserValidation,
 } = require("../lib/validations/userValidations");
+const deleteFileMiddleware = require("../middlewares/deleteFileMiddleware");
 
 const register = async (req, res) => {
   try {
@@ -115,7 +116,7 @@ const refresh = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user._id;
 
     const user = await User.findById(userId);
     if (!user) return errorHandler(res, 400, "User not found!");
@@ -131,6 +132,7 @@ const updateUser = async (req, res) => {
   try {
     const userId = req.params.userId;
     const { username, email, password, currentPassword } = req.body;
+    const imageUrl = req.file.path;
 
     const { error } = updateUserValidation.validate(req.body);
     if (error) return errorHandler(res, 400, error.message);
@@ -166,6 +168,12 @@ const updateUser = async (req, res) => {
       }
 
       user.password = await bcrypt.hash(password, 10);
+    }
+
+    if (imageUrl) {
+      if (user.profile) deleteFileMiddleware(user.profile);
+
+      user.profile = imageUrl;
     }
 
     // Save the updated user
