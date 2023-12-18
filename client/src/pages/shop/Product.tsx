@@ -1,19 +1,20 @@
+import { useParams } from "react-router-dom";
+
 import ProductSkeleton from "@/components/shared/Skeletons/ProductSkeleton";
 import { Button } from "@/components/ui/button";
-
-const mockProduct = {
-  id: 1,
-  image: "/admin-ui/products/apple-iphone-15-pro-1tb-blue-titanium.png",
-  name: "Phone",
-  description:
-    "Dive into luxury with the Apple iPhone 15 Pro in Blue Titanium. Unleash powerful performance, stunning visuals, and abundant storage with 1TB, redefining excellence in smartphone technology.",
-  price: 1500,
-  category: "Phone",
-  inStock: true,
-};
+import { useGetProduct } from "@/lib/react-query/queries";
+import { IMAGE_BASE_URL } from "@/constants";
 
 const Product = () => {
-  const isLoading = false;
+  const { productId } = useParams();
+  const {
+    data: product,
+    isLoading,
+    isError,
+    error,
+  } = useGetProduct(productId || "", "categoryId");
+
+  if (isError) return <div>Error: {error.message}</div>;
 
   if (isLoading) return <ProductSkeleton />;
 
@@ -23,31 +24,30 @@ const Product = () => {
       <div className="relative min-h-[260px] bg-gray md:flex-1 lg:min-h-[320px]">
         <img
           className="absolute w-full h-full object-contain p-8"
-          src={mockProduct.image}
-          alt={mockProduct.name}
+          src={IMAGE_BASE_URL + product?.imageUrl}
+          alt={product?.name}
         />
       </div>
       {/* Content */}
       <div className="flex flex-col p-4 md:flex-1">
-        <h3 className="text-[26px] lg:text-[32px] font-semibold mb-3">
-          {mockProduct.name}
+        <h3 className="text-[26px] lg:text-[32px] font-semibold leading-normal mb-3">
+          {product?.name}
         </h3>
         <span className="text-[15px] lg:text-[17px] mb-4">
-          {mockProduct.category} |
-          {mockProduct.inStock ? (
+          {typeof product?.categoryId !== "string" && product?.categoryId?.name}{" "}
+          |
+          {product?.inStuck ? (
             <span className="text-green-500 ml-2">In Stock</span>
           ) : (
             <span className="text-red-500 ml-2">Out of Stock</span>
           )}
         </span>
-        <span className="text-[16px] lg:text-[18px]">${mockProduct.price}</span>
+        <span className="text-[16px] lg:text-[18px]">${product?.price}</span>
         <div className="my-6">
           <h6 className="text-[16px] lg:text-[20px] font-semibold">
             Description
           </h6>
-          <p className="text-[15px] lg:text-[17px]">
-            {mockProduct.description}
-          </p>
+          <p className="text-[15px] lg:text-[17px]">{product?.description}</p>
         </div>
         <Button size={"lg"}>Add to Cart</Button>
       </div>

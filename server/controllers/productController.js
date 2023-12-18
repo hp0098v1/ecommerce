@@ -11,12 +11,33 @@ const deleteFileMiddleware = require("../middlewares/deleteFileMiddleware");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    let populateFields = [];
+    const allowedFields = ["categoryId"];
+
+    if (req.query.populate) {
+      populateFields = req.query.populate
+        .split(",")
+        .filter((field) => allowedFields.includes(field));
+    }
+
+    const products = await Product.find()
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate(populateFields);
 
     if (products.length === 0)
       return res.status(200).json({ message: "No Product found!" });
 
-    res.status(200).json({ products });
+    const total = await Product.countDocuments();
+
+    res.status(200).json({
+      products,
+      totalPages: Math.ceil(total / limit),
+      totalProducts: total,
+      currentPage: page,
+    });
   } catch (error) {
     errorHandler(res, 400, error?.message);
   }
@@ -26,7 +47,16 @@ const getProductById = async (req, res) => {
   try {
     const productId = req.params.productId;
 
-    const product = await Product.findById(productId);
+    let populateFields = [];
+    const allowedFields = ["categoryId"];
+
+    if (req.query.populate) {
+      populateFields = req.query.populate
+        .split(",")
+        .filter((field) => allowedFields.includes(field));
+    }
+
+    const product = await Product.findById(productId).populate(populateFields);
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });

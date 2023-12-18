@@ -1,12 +1,7 @@
 import { Link } from "react-router-dom";
 
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-};
+import { Product } from "@/types";
+import { IMAGE_BASE_URL } from "@/constants";
 
 type ProductCardProps = {
   product: Product;
@@ -14,11 +9,11 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <Link to={`/products/${product.id}`}>
+    <Link to={`/products/${product._id}`}>
       <div className="relative min-h-[260px] bg-gray">
         <img
           className="absolute w-full h-full object-contain p-8"
-          src={product.image}
+          src={IMAGE_BASE_URL + product.imageUrl}
           alt={product.name}
         />
       </div>

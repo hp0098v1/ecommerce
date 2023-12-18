@@ -22,3 +22,5 @@ export const FOOTER_SOCIAL_MEDIA_ICONS = [
     url: "https://twitter.com",
   },
 ];
+
+export const IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGES_BASE_URL;
