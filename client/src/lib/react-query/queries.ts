@@ -3,8 +3,9 @@ import { useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { axiosApiWithAuth } from "@/lib/axios";
 import QUERY_KEYS from "./queryKeys";
-import { getCategories, getProduct, getProducts } from "./queryFns";
-import { Cart, CartItem, LoginResponse, User } from "@/types";
+import { getCategories, getProductById, getProducts } from "./queryFns";
+import { TCart, TCartItem, TUser } from "@/types";
+import { LoginResponse } from "@/types/responseTypes";
 import { useToast } from "@/components/ui/use-toast";
 import { AxiosError } from "axios";
 import { useAuthStore } from "../zustand/authStore";
@@ -103,8 +104,7 @@ export const useGetMe = () => {
   });
 };
 
-// Cart
-
+// Cart Queries
 export const useGetCart = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CART],
@@ -159,14 +159,14 @@ export const useGetCategories = () =>
     queryFn: getCategories,
   });
 
-export const useGetProducts = (page = 1, limit = 9, populate = "") =>
+export const useGetProducts = (page = 1, limit = 9, populate = "category") =>
   useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, page, limit],
     queryFn: () => getProducts(page, limit, populate),
   });
 
-export const useGetProduct = (productId: string, populate = "") =>
+export const useGetProductById = (productId: string, populate = "") =>
   useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, productId],
-    queryFn: () => getProduct(productId, populate),
+    queryFn: () => getProductById(productId, populate),
   });

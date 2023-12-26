@@ -2,9 +2,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import ProductSkeleton from "@/components/shared/Skeletons/ProductSkeleton";
 import { Button } from "@/components/ui/button";
-import { useGetProduct } from "@/lib/react-query/queries";
-import { IMAGE_BASE_URL } from "@/constants";
+import { useGetProductById } from "@/lib/react-query/queries";
 import { useCartStore } from "@/lib/zustand/cartStore.ts";
+import { IMAGE_BASE_URL } from "@/constants";
 
 const Product = () => {
   const { productId } = useParams();
@@ -14,12 +14,12 @@ const Product = () => {
   const { addProduct, products } = useCartStore();
 
   // React Query
-  const {
-    data: product,
-    isLoading,
-    isError,
-    error,
-  } = useGetProduct(productId || "", "categoryId");
+  const { data, isLoading, isError, error } = useGetProductById(
+    productId || "",
+    "categoryId"
+  );
+
+  const product = data?.product;
 
   const isExistingProuductInCart = products.find(
     (p) => p.productId === product?._id
@@ -76,7 +76,7 @@ const Product = () => {
           onClick={addToCartHandler}
           size={"lg"}
         >
-          {!!isExistingProuductInCart ? "Go to Cart" : "Add to Cart"}
+          {isExistingProuductInCart ? "Go to Cart" : "Add to Cart"}
         </Button>
       </div>
     </section>

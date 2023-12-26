@@ -4,7 +4,7 @@ import { useGetCategories } from "@/lib/react-query/queries";
 import { IMAGE_BASE_URL } from "@/constants";
 
 const Categories = () => {
-  const { data: categories, isLoading, isError, error } = useGetCategories();
+  const { data, isLoading, isError, error } = useGetCategories();
 
   if (isError) return <div>Error: {error.message}</div>;
 
@@ -13,14 +13,12 @@ const Categories = () => {
   return (
     <section className="common-container flex flex-col gap-8 mt-20 mb-16 md:mt-32">
       <div className="flex justify-between">
-        <h3 className="h3-normal">
-          Shop by Categories
-        </h3>
+        <h3 className="h3-normal">Shop by Categories</h3>
         <Link to={"/products"}>Show All</Link>
       </div>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {categories?.map((cate) => (
+        {data?.categories?.map((cate) => (
           <li key={cate.name}>
             <Link
               to={"/products"}

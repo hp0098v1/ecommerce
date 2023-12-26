@@ -1,26 +1,26 @@
-export type Category = {
+export type TCategory = {
   _id: string;
   name: string;
   imageUrl: string;
 };
 
-export type Product = {
+export type TProduct = {
   _id: string;
   name: string;
   imageUrl: string;
   description: string;
   price: number;
   inStuck: boolean;
-  categoryId: string | Category;
+  categoryId: string | TCategory;
 };
 
-export type User = {
+export type TUser = {
   _id: string;
   username: string;
   email: string;
 };
 
-export type CartItem = {
+export type TCartItem = {
   productId: string;
   name: string;
   imageUrl: string;
@@ -29,14 +29,9 @@ export type CartItem = {
   subtotal: number;
 };
 
-export type Cart = {
+export type TCart = {
   _id: string;
   userId: string;
-  products: CartItem[];
+  products: TCartItem[];
   grandTotal: number;
-};
-
-export type LoginResponse = {
-  accessToken: string;
-  user: User;
 };

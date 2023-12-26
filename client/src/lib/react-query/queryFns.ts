@@ -1,26 +1,24 @@
 import { axiosApi } from "../axios";
-import { Category, Product } from "@/types";
+import { TProduct } from "@/types";
+import {
+  TGetCategoriesResponse,
+  TGetProductByIdResponse,
+  TGetProductsResponse,
+} from "@/types/responseTypes";
 
-export const getCategories = async (): Promise<Category[]> => {
-  const res = await axiosApi.get<{ categories: Category[] }>("/categories");
+export const getCategories = async (): Promise<TGetCategoriesResponse> => {
+  const res = await axiosApi.get<TGetCategoriesResponse>("/categories");
   const data = res.data;
 
-  return data.categories;
-};
-
-type GetProductsData = {
-  products: Product[];
-  totalPages: number;
-  totalProducts: number;
-  currentPage: number;
+  return data;
 };
 
 export const getProducts = async (
   page: number,
   limit: number,
   pupulate: string
-): Promise<GetProductsData> => {
-  const res = await axiosApi.get<GetProductsData>("/products", {
+): Promise<TGetProductsResponse> => {
+  const res = await axiosApi.get<TGetProductsResponse>("/products", {
     params: {
       page,
       limit,
@@ -32,11 +30,11 @@ export const getProducts = async (
   return data;
 };
 
-export const getProduct = async (
+export const getProductById = async (
   productId: string,
   populate: string
-): Promise<Product> => {
-  const res = await axiosApi.get<{ product: Product }>(
+): Promise<TGetProductByIdResponse> => {
+  const res = await axiosApi.get<TGetProductByIdResponse>(
     "/products/" + productId,
     {
       params: {
@@ -46,5 +44,5 @@ export const getProduct = async (
   );
   const data = res.data;
 
-  return data.product;
+  return data;
 };
