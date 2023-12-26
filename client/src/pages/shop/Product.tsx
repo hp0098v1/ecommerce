@@ -4,12 +4,14 @@ import ProductSkeleton from "@/components/shared/Skeletons/ProductSkeleton";
 import { Button } from "@/components/ui/button";
 import { useGetProductById } from "@/lib/react-query/queries";
 import { IMAGE_BASE_URL } from "@/constants";
+import { useCartStore } from "@/lib/zustand";
 
 const Product = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
 
   // Zustand
+  const { products, addItem } = useCartStore();
 
   // React Query
   const { data, isLoading, isError, error } = useGetProductById(
@@ -19,23 +21,27 @@ const Product = () => {
 
   const product = data?.product;
 
-  // const isExistingProuductInCart = products.find(
-  //   (p) => p.productId === product?._id
-  // );
+  const isExistingProuductInCart = products.find(
+    (p) => p.productId === product?._id
+  );
 
   // Handlers
   const addToCartHandler = () => {
     if (isExistingProuductInCart) {
       return navigate("/cart");
     }
-    if (product)
-      addProduct(
-        product?._id,
-        product?.price,
-        1,
-        product?.name,
-        product?.imageUrl
-      );
+
+    if (product) {
+      const cartItem = {
+        productId: product?._id,
+        name: product?.name,
+        price: product?.price,
+        imageUrl: product?.imageUrl,
+        quantity: 1,
+        subtotal: product?.price,
+      };
+      addItem(cartItem);
+    }
   };
 
   if (isError) return <div>Error: {error.message}</div>;
@@ -69,13 +75,8 @@ const Product = () => {
           <h6 className="text-3 font-semibold">Description</h6>
           <p className="text-1">{product?.description}</p>
         </div>
-        <Button
-          // disabled={!!isExistingProuductInCart}
-          onClick={addToCartHandler}
-          size={"lg"}
-        >
-          {/* {isExistingProuductInCart ? "Go to Cart" : "Add to Cart"} */}
-          Add To Cart
+        <Button onClick={addToCartHandler} size={"lg"}>
+          {isExistingProuductInCart ? "Go to Cart" : "Add to Cart"}
         </Button>
       </div>
     </section>

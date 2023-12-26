@@ -6,11 +6,15 @@ import {
   HAMBURGER_MENU_LINKS,
   HAMBURGER_MENU_LINKS_PRIVATE,
 } from "@/constants";
-import { useAuthStore } from "@/lib/zustand";
+import { useAuthStore, useCartStore } from "@/lib/zustand";
 
 const Header = () => {
-  const { isLoggedIn } = useAuthStore();
+  // States
   const [isHumbergerOpened, setIsHumbergerOpened] = useState(false);
+
+  // Zustand
+  const { isLoggedIn } = useAuthStore();
+  const { products } = useCartStore();
 
   const toggleMenuHandler = () => {
     setIsHumbergerOpened((prev) => !prev);
@@ -42,7 +46,7 @@ const Header = () => {
 
         <Link to={"/cart"} className="flex items-center">
           <img className="w-6 h-6" src="/assets/icons/cart.svg" alt="cart" />
-          <span>(10)</span>
+          <span>({products.length})</span>
         </Link>
       </div>
 
