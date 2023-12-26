@@ -1,12 +1,12 @@
-import { User } from "@/types";
+import { TUser } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type AuthStore = {
-  user: User | null;
+  user: TUser | null;
   accessToken: string | null;
   isLoggedIn: boolean;
-  login: (user: User, accessToken: string) => void;
+  login: (user: TUser, accessToken: string) => void;
   logout: () => void;
 };
 
@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthStore>()(
       logout: () => set({ user: null, accessToken: null, isLoggedIn: false }),
     }),
     {
-      name: "auth",
+      name: "user",
     }
   )
 );

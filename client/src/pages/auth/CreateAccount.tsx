@@ -1,6 +1,10 @@
+import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+
+import { RegisterValidation } from "@/lib/validations";
+import { useRegister } from "@/lib/react-query/queries";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,33 +16,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
 
 const CreateAccount = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  // React Query
+  const { mutateAsync, isPending } = useRegister();
+
+  // React Hook Form
+  const form = useForm<z.infer<typeof RegisterValidation>>({
+    resolver: zodResolver(RegisterValidation),
     defaultValues: {
       username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  // Handlers
+  const submitHandler = async (values: z.infer<typeof RegisterValidation>) => {
+    await mutateAsync({
+      username: values.username,
+      email: values.email,
+      password: values.password,
+    });
+  };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(submitHandler)}
         className="flex flex-col gap-8"
       >
         <div>
@@ -68,7 +74,7 @@ const CreateAccount = () => {
 
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -84,7 +90,7 @@ const CreateAccount = () => {
         />
         <FormField
           control={form.control}
-          name="username"
+          name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -100,14 +106,14 @@ const CreateAccount = () => {
 
         <FormField
           control={form.control}
-          name="username"
+          name="confirmPassword"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
                 Confirm Password <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input type="password" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -115,7 +121,9 @@ const CreateAccount = () => {
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button disabled={isPending} type="submit">
+          Submit
+        </Button>
 
         <p>
           <Link to={"/login"}>Already have an account? Login</Link>

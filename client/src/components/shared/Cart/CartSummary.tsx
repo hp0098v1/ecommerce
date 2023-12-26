@@ -1,8 +1,7 @@
-import { useCartStore } from "@/lib/zustand/cartStore.ts";
 import { Button } from "@/components/ui/button";
 
 const CartSummary = () => {
-  const { grandTotal } = useCartStore();
+  // const { grandTotal } = useCartStore();
 
   return (
     <div className="flex flex-col gap-4  border border-[#f3f3f3] p-4">
@@ -14,7 +13,7 @@ const CartSummary = () => {
       </p>
       <h6 className="flex items-center justify-between text-[15px] md:text-[18px] border-b border-[#f3f3f3] p-3">
         <span>Grand Total</span>
-        <span>${grandTotal}</span>
+        <span>${3000}</span>
       </h6>
       <Button size={"lg"}>Proceed to Checkout</Button>
     </div>

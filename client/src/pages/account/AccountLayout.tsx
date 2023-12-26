@@ -20,9 +20,15 @@ const mockList = [
 ];
 
 const AccountLayout = () => {
-  const { mutate } = useLogout();
-  const { data: user } = useGetMe();
+  // Zustand
 
+  // React Query
+  const { mutate } = useLogout();
+  const { data } = useGetMe();
+
+  const user = data?.user;
+
+  // Handlers
   const logoutHandler = () => {
     mutate();
   };

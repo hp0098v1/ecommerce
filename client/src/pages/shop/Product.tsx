@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import ProductSkeleton from "@/components/shared/Skeletons/ProductSkeleton";
 import { Button } from "@/components/ui/button";
 import { useGetProductById } from "@/lib/react-query/queries";
-import { useCartStore } from "@/lib/zustand/cartStore.ts";
 import { IMAGE_BASE_URL } from "@/constants";
 
 const Product = () => {
@@ -11,7 +10,6 @@ const Product = () => {
   const navigate = useNavigate();
 
   // Zustand
-  const { addProduct, products } = useCartStore();
 
   // React Query
   const { data, isLoading, isError, error } = useGetProductById(
@@ -21,9 +19,9 @@ const Product = () => {
 
   const product = data?.product;
 
-  const isExistingProuductInCart = products.find(
-    (p) => p.productId === product?._id
-  );
+  // const isExistingProuductInCart = products.find(
+  //   (p) => p.productId === product?._id
+  // );
 
   // Handlers
   const addToCartHandler = () => {
@@ -76,7 +74,8 @@ const Product = () => {
           onClick={addToCartHandler}
           size={"lg"}
         >
-          {isExistingProuductInCart ? "Go to Cart" : "Add to Cart"}
+          {/* {isExistingProuductInCart ? "Go to Cart" : "Add to Cart"} */}
+          Add To Cart
         </Button>
       </div>
     </section>

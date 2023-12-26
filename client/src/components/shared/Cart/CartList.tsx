@@ -1,9 +1,9 @@
 import CartItem from "./CartItem";
 
-import { CartItem as CartItemType } from "@/types";
+import { TCartItem } from "@/types";
 
 type CartListProps = {
-  cart: CartItemType[];
+  cart: TCartItem[];
 };
 
 const CartList = ({ cart }: CartListProps) => {

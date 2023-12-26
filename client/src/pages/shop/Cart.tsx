@@ -5,10 +5,19 @@ import CartListHeader from "@/components/shared/Cart/CartListHeader";
 import CartSummary from "@/components/shared/Cart/CartSummary";
 import ContinueShopping from "@/components/shared/Cart/ContinueShopping";
 import CartSkeleton from "@/components/shared/Skeletons/CartSkeleton";
-import { useCartStore } from "@/lib/zustand/cartStore.ts";
+
+const products = [
+  {
+    productId: "test",
+    name: "test",
+    imageUrl: "test",
+    price: 123,
+    quantity: 123,
+    subtotal: 123,
+  },
+];
 
 const Cart = () => {
-  const { products } = useCartStore();
   const isLoading = false;
 
   if (isLoading) return <CartSkeleton />;

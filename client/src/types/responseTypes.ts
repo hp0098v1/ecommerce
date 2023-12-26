@@ -1,9 +1,5 @@
+import { AxiosError } from "axios";
 import { TUser, TProduct, TCategory } from "./index";
-
-export type TLoginResponse = {
-  accessToken: string;
-  user: TUser;
-};
 
 export type TGetProductsResponse = {
   products: TProduct[];
@@ -19,3 +15,24 @@ export type TGetProductByIdResponse = {
 export type TGetCategoriesResponse = {
   categories: TCategory[];
 };
+
+/* -------------------------------------------------------------------------- */
+/*                               Auth Responses                               */
+/* -------------------------------------------------------------------------- */
+export type TLoginResponse = {
+  accessToken: string;
+  user: TUser;
+};
+
+/* -------------------------------------------------------------------------- */
+/*                               User Responses                               */
+/* -------------------------------------------------------------------------- */
+export type TUserResponse = {
+  user: TUser;
+};
+
+// Axios Error
+export type TAxiosErrorResponse = AxiosError<{
+  status: number;
+  message: string;
+}>;

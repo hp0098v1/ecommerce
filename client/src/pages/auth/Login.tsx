@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { LoginValidation } from "@/lib/validations";
-import { useLogin } from "@/lib/react-query/queries.ts";
+import { useLogin } from "@/lib/react-query/queries";
 import { Button } from "@/components/ui/button";
 import {
   Form,

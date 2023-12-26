@@ -1,4 +1,5 @@
 const QUERY_KEYS = {
+  REGISTER: "register",
   LOGIN: "login",
   LOGOUT: "logout",
   ME: "me",
