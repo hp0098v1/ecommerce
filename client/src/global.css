@@ -113,42 +113,36 @@
     @apply m-0 font-semibold;
   }
 
-  .h1-bold {
-    @apply text-4xl lg:text-6xl font-bold;
+  .h3-semibold {
+    @apply text-[26px] lg:text-[32px] font-semibold;
+  }
+
+  .h3-normal {
+    @apply text-[26px] lg:text-[32px] font-normal;
   }
 
   .h2-bold {
     @apply text-3xl lg:text-5xl font-bold;
   }
 
-  .h3-bold {
-    @apply text-2xl lg:text-4xl font-bold;
+  .text-1 {
+    @apply text-[15px] lg:text-[17px];
   }
 
-  .h4-bold {
-    @apply text-xl lg:text-3xl font-bold;
+  .text-2 {
+    @apply text-[16px] lg:text-[18px];
   }
 
-  .h4-normal {
-    @apply text-xl lg:text-3xl font-normal tracking-normal;
+  .text-3 {
+    @apply text-[16px] lg:text-[20px];
   }
 
-  .h5-bold {
-    @apply text-lg lg:text-2xl font-bold;
-  }
-
-  .h6 {
-    font-size: inherit;
-    line-height: inherit;
-    font-weight: bold;
+  .text-4 {
+    @apply text-[18px] lg:text-[24px];
   }
 
   .base {
     @apply text-sm lg:text-base font-normal;
-  }
-
-  .base-large {
-    @apply text-lg lg:text-2xl;
   }
 
   .small {

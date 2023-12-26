@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="flex flex-col justify-center items-start px-6 lg:px-[11vw] h-full">
         <h2 className="h2-bold">Unleash Innovation</h2>
         <h2 className="h2-bold">in Every Byte.</h2>
-        <p className="base-large mt-2">{mockHero.subtitle}</p>
+        <p className="text-4 mt-2">{mockHero.subtitle}</p>
         <Button className="mt-4 lg:mt-6">Shop</Button>
       </div>
     </div>

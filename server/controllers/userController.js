@@ -197,7 +197,7 @@ const getCart = async (req, res) => {
     const userId = req.user._id;
     const cart = await Cart.findOne({ userId }).exec();
 
-    if (!cart) return errorHandler(res, 400, "Cart not found!");
+    if (!cart) return errorHandler(res, 404, "Cart not found!");
 
     if (cart.userId.toString() !== userId.toString())
       return errorHandler(res, 400, "Unauthorized!");
@@ -211,6 +211,7 @@ const getCart = async (req, res) => {
 const createCart = async (req, res) => {
   try {
     const userId = req.user._id;
+    console.log(userId);
     const { products, grandTotal } = req.body;
 
     const cart = await Cart.findOne({ userId }).exec();

@@ -13,7 +13,7 @@ const Categories = () => {
   return (
     <section className="common-container flex flex-col gap-8 mt-20 mb-16 md:mt-32">
       <div className="flex justify-between">
-        <h3 className="text-[26px] lg:text-[32px] font-normal">
+        <h3 className="h3-normal">
           Shop by Categories
         </h3>
         <Link to={"/products"}>Show All</Link>

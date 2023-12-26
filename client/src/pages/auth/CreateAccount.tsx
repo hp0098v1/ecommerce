@@ -43,12 +43,10 @@ const CreateAccount = () => {
       >
         <div>
           <h2 className="flex gap-2 mb-2">
-            <span className="text-[26px] lg:text-[32px]">Create Account</span>
+            <span className="h3-normal">Create Account</span>
             <img className="w-4 h-4" src="/assets/icons/hand.png" alt="hand" />
           </h2>
-          <p className="text-[#A4A1B2] text-[15px] lg:text-[17px]">
-            Please enter details
-          </p>
+          <p className="text-[#A4A1B2] text-1">Please enter details</p>
         </div>
 
         <FormField
