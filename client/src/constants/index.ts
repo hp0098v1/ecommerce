@@ -5,6 +5,11 @@ export const HAMBURGER_MENU_LINKS = [
   { title: "Create Account", path: "/create-account" },
 ];
 
+export const HAMBURGER_MENU_LINKS_PRIVATE = [
+  { title: "Home", path: "/" },
+  { title: "Shop", path: "/products" },
+  { title: "Account", path: "/account" },
+];
 export const FOOTER_SOCIAL_MEDIA_ICONS = [
   {
     alt: "facebook",

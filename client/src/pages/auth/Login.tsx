@@ -1,7 +1,10 @@
+import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { LoginValidation } from "@/lib/validations";
+import { useLogin } from "@/lib/react-query/queries";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,33 +15,31 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
 
 const Login = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  //   React Query
+  const { mutateAsync, isPending: isPendingLogin } = useLogin();
+
+  const form = useForm<z.infer<typeof LoginValidation>>({
+    resolver: zodResolver(LoginValidation),
     defaultValues: {
-      username: "",
+      email: "",
+      password: "",
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const submitHandler = async (values: z.infer<typeof LoginValidation>) => {
+    await mutateAsync({
+      email: values.email,
+      password: values.password,
+    });
+  };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(submitHandler)}
         className="flex flex-col gap-8"
       >
         <div>
@@ -46,14 +47,12 @@ const Login = () => {
             <span className="text-[26px] lg:text-[32px]">Wellcome</span>
             <img className="w-4 h-4" src="/assets/icons/hand.png" alt="hand" />
           </h2>
-          <p className="text-[#A4A1B2] text-[15px] lg:text-[17px]">
-            Please login here
-          </p>
+          <p className="text-[#A4A1B2] text-1">Please login here</p>
         </div>
 
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -69,7 +68,7 @@ const Login = () => {
         />
         <FormField
           control={form.control}
-          name="username"
+          name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -82,7 +81,9 @@ const Login = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button disabled={isPendingLogin} type="submit">
+          Submit
+        </Button>
 
         <p>
           <Link to={"/create-account"}>Craete an account ?</Link>

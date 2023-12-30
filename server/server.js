@@ -16,11 +16,18 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionSuccessStatus: 200,
+  })
+);
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors());
 
 connectDB();
 app.use("/users", userRoutes);

@@ -1,6 +1,14 @@
+import { useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 
 const ContinueShopping = () => {
+  const navigate = useNavigate();
+
+  // Handlers
+  const navToShoppingHandler = () => {
+    navigate("/products");
+  };
   return (
     <div className="flex flex-col items-start gap-8 lg:gap-16 lg:flex-row lg:items-center bg-gray p-8 lg:p-16 mt-32">
       <div>
@@ -12,7 +20,9 @@ const ContinueShopping = () => {
           or a unique addition to your collection.
         </p>
       </div>
-      <Button size={"lg"}>Continue Shopping</Button>
+      <Button onClick={navToShoppingHandler} size={"lg"}>
+        Continue Shopping
+      </Button>
     </div>
   );
 };

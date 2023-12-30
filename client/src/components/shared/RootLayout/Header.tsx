@@ -2,10 +2,19 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { HAMBURGER_MENU_LINKS } from "@/constants";
+import {
+  HAMBURGER_MENU_LINKS,
+  HAMBURGER_MENU_LINKS_PRIVATE,
+} from "@/constants";
+import { useAuthStore, useCartStore } from "@/lib/zustand";
 
 const Header = () => {
+  // States
   const [isHumbergerOpened, setIsHumbergerOpened] = useState(false);
+
+  // Zustand
+  const { isLoggedIn } = useAuthStore();
+  const { products } = useCartStore();
 
   const toggleMenuHandler = () => {
     setIsHumbergerOpened((prev) => !prev);
@@ -21,18 +30,27 @@ const Header = () => {
         />
       </Link>
 
+      {/* Desktop */}
       <div className="hidden md:flex gap-6 items-center text-gray-600">
         <Link to={"/"}>Home</Link>
         <Link to={"/products"}>Shop</Link>
-        <Button>
-          <Link to={"/login"}>Login</Link>
-        </Button>
+        {isLoggedIn ? (
+          <Link to={"/account"}>
+            <img src="/assets/icons/user.svg" alt="" />
+          </Link>
+        ) : (
+          <Button>
+            <Link to={"/login"}>Login</Link>
+          </Button>
+        )}
+
         <Link to={"/cart"} className="flex items-center">
           <img className="w-6 h-6" src="/assets/icons/cart.svg" alt="cart" />
-          <span>(0)</span>
+          <span>({products.length})</span>
         </Link>
       </div>
 
+      {/* Mobile */}
       <div className="flex items-center gap-2 md:hidden">
         <Link to={"/cart"} className="flex items-center">
           <img className="w-6 h-6" src="/assets/icons/cart.svg" alt="cart" />
@@ -57,11 +75,19 @@ const Header = () => {
               isHumbergerOpened ? "flex" : "hidden"
             }`}
           >
-            {HAMBURGER_MENU_LINKS.map((item) => (
-              <li key={`hamburger-menu-link-${item.title}`}>
-                <Link to={item.path}>{item.title}</Link>
-              </li>
-            ))}
+            {!isLoggedIn &&
+              HAMBURGER_MENU_LINKS.map((item) => (
+                <li key={`hamburger-menu-link-${item.title}`}>
+                  <Link to={item.path}>{item.title}</Link>
+                </li>
+              ))}
+
+            {isLoggedIn &&
+              HAMBURGER_MENU_LINKS_PRIVATE.map((item) => (
+                <li key={`hamburger-menu-link-private-${item.title}`}>
+                  <Link to={item.path}>{item.title}</Link>
+                </li>
+              ))}
           </ul>
         </div>
       </div>

@@ -1,19 +1,21 @@
 // middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
 const _ = require("lodash");
+const { errorHandler } = require("../lib/utils/errorHandler");
 
 const generateAccessToken = (user) => {
   return jwt.sign(
     { _id: user._id, username: user.username, role: user.role },
     process.env.SECRET_KEY,
-    { expiresIn: "15m" }
+    { expiresIn: "15s" }
   );
 };
 
 const generateRefreshToken = (user) => {
   return jwt.sign(
     { _id: user._id, username: user.username, role: user.role },
-    process.env.SECRET_KEY
+    process.env.SECRET_KEY,
+    { expiresIn: "1d" }
   );
 };
 
@@ -21,10 +23,10 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (!token) return res.status(401).send("Access denied.");
+  if (!token) return errorHandler(res, 401, "Access Denied.");
 
   jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
-    if (err) return res.status(403).send("Invalid token.");
+    if (err) return errorHandler(res, 403, "Invalid Token.");
 
     req.user = _.omit(user, ["password"]);
     next();
@@ -32,8 +34,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 const authorizeAdmin = (req, res, next) => {
-  if (req.user.role !== "admin")
-    return res.status(403).send("Permission denied.");
+  if (req.user.role !== "admin") return errorHandler(res, 403, "Unauthorized.");
   next();
 };
 

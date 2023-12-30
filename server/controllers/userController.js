@@ -91,7 +91,6 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
 
     return res.status(200).json({ message: "Logout successful!" });
@@ -197,7 +196,7 @@ const getCart = async (req, res) => {
     const userId = req.user._id;
     const cart = await Cart.findOne({ userId }).exec();
 
-    if (!cart) return errorHandler(res, 400, "Cart not found!");
+    if (!cart) return errorHandler(res, 404, "Cart not found!");
 
     if (cart.userId.toString() !== userId.toString())
       return errorHandler(res, 400, "Unauthorized!");

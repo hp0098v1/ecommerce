@@ -1,9 +1,5 @@
+import { useGetMe, useLogout } from "@/lib/react-query/queries";
 import { Link, Outlet } from "react-router-dom";
-
-const mockUser = {
-  name: "erfan",
-  email: "hp0098v1@gmail.com",
-};
 
 const mockList = [
   {
@@ -24,11 +20,22 @@ const mockList = [
 ];
 
 const AccountLayout = () => {
+  // Zustand
+
+  // React Query
+  const { mutate } = useLogout();
+  const { data } = useGetMe();
+
+  const user = data?.user;
+
+  // Handlers
+  const logoutHandler = () => {
+    mutate();
+  };
+
   return (
     <div className="common-container mt-12">
-      <h3 className="text-[26px] lg:text-[32px] font-semibold mb-12">
-        My Profile
-      </h3>
+      <h3 className="h3-semibold mb-12">My Profile</h3>
       <div className="grid gap-8 grid-cols-1 md:grid-cols-[30%_1fr]">
         {/* Page Layout */}
         <div className="border border-[#f3f3f3] divide-y divide-[#f3f3f3]">
@@ -38,9 +45,9 @@ const AccountLayout = () => {
 
             <div>
               <p className="text-[15px] lg:text-[18px] font-semibold">
-                {mockUser.name}
+                {user?.username}
               </p>
-              <p className="text-[16px]">{mockUser.email}</p>
+              <p className="text-[16px]">{user?.email}</p>
             </div>
           </div>
           {/* Navigation */}
@@ -55,7 +62,10 @@ const AccountLayout = () => {
             ))}
 
             <li>
-              <button className="flex items-center gap-3 p-6">
+              <button
+                onClick={logoutHandler}
+                className="flex items-center gap-3 p-6"
+              >
                 <img className="w-6" src="/assets/icons/logout.svg" alt="" />
                 <p>Logout</p>
               </button>
