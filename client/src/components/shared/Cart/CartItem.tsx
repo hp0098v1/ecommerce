@@ -1,26 +1,50 @@
 import { useCartStore } from "@/lib/zustand";
 import { IMAGE_BASE_URL } from "@/constants";
 import { TCartItem } from "@/types";
+import { useUpdateCart } from "@/lib/react-query/queries";
+import { removeCartItem, updateCartItem } from "@/lib/utils";
 
 type CartItemProps = {
   cartItem: TCartItem;
 };
 
 const CartItem = ({ cartItem }: CartItemProps) => {
-  const { updateItem, removeItem } = useCartStore();
+  const { cartId, products, updateCart, removeItem } = useCartStore();
+  const { mutate } = useUpdateCart();
 
   //   Handlers
   const incQuantityHandler = () => {
-    updateItem(cartItem.productId, cartItem.quantity + 1);
+    const [updatedCart, grandTotal] = updateCartItem(
+      products,
+      cartItem.productId,
+      cartItem.quantity + 1
+    );
+    updateCart(updatedCart, grandTotal);
+    if (cartId !== null)
+      mutate({ data: { products: updatedCart, grandTotal }, cartId: cartId });
   };
   const decQuantityHandler = () => {
     if (cartItem.quantity === 1) {
       return deleteItemHandler();
     }
-    updateItem(cartItem.productId, cartItem.quantity - 1);
+    const [updatedCart, grandTotal] = updateCartItem(
+      products,
+      cartItem.productId,
+      cartItem.quantity - 1
+    );
+
+    updateCart(updatedCart, grandTotal);
+    if (cartId !== null)
+      mutate({ data: { products: updatedCart, grandTotal }, cartId: cartId });
   };
   const deleteItemHandler = () => {
-    removeItem(cartItem.productId);
+    const [updatedCart, grandTotal] = removeCartItem(
+      products,
+      cartItem.productId
+    );
+    removeItem(updatedCart, grandTotal);
+    if (cartId !== null)
+      mutate({ data: { products: updatedCart, grandTotal }, cartId: cartId });
   };
 
   return (

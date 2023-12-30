@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthStore>()(
       logout: () => set({ user: null, accessToken: null, isLoggedIn: false }),
     }),
     {
-      name: "user",
+      name: "auth",
     }
   )
 );

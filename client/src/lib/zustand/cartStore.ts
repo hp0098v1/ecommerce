@@ -3,75 +3,56 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type TCartStore = {
+  cartId: string | null;
   userId: string | null;
   products: TCartItem[];
   grandTotal: number;
-  addItem: (item: TCartItem) => void;
-  updateItem: (productId: string, quantity: number) => void;
-  removeItem: (productId: string) => void;
+  addItem: (updatedCart: TCartItem[], grandTotal: number) => void;
+  updateCart: (updatedCart: TCartItem[], grandTotal: number) => void;
+  removeItem: (pdatedCart: TCartItem[], grandTotal: number) => void;
+  clearCart: () => void;
+  setCart: (
+    cartId: string,
+    userId: string,
+    products: TCartItem[],
+    grandTotal: number
+  ) => void;
 };
 
 export const useCartStore = create<TCartStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
+      cartId: null,
       userId: null,
       products: [],
       grandTotal: 0,
-      addItem: (item: TCartItem) => {
-        const isExistingItem = get().products.includes(item);
-
-        if (isExistingItem) {
-          console.log("Item already in cart");
-        }
-
-        const updatedProducts = [...get().products, item];
-        const grandTotal = updatedProducts.reduce(
-          (acc, cur) => acc + cur.subtotal,
-          0
-        );
-
+      addItem: (updatedCart, grandTotal) => {
         set((state) => ({
           ...state,
-          products: updatedProducts,
+          products: updatedCart,
           grandTotal,
         }));
       },
-      updateItem: (productId: string, quantity: number) => {
-        const isExistingItem = get().products.find(
-          (item) => item.productId === productId
-        );
-
-        if (!isExistingItem) {
-          console.log("Item does not exit");
-        }
-
-        const updatedProducts = get().products.map((item) =>
-          item.productId === productId
-            ? { ...item, quantity, subtotal: item.price * quantity }
-            : item
-        );
-        const grandTotal = updatedProducts.reduce(
-          (acc, cur) => acc + cur.subtotal,
-          0
-        );
-
-        set((state) => ({ ...state, products: updatedProducts, grandTotal }));
+      updateCart: (updatedCart, grandTotal) => {
+        set((state) => ({ ...state, products: updatedCart, grandTotal }));
       },
-      removeItem: (productId: string) => {
-        const updatedProducts = get().products.filter(
-          (item) => item.productId !== productId
-        );
-
-        const grandTotal = updatedProducts.reduce(
-          (acc, cur) => acc + cur.subtotal,
-          0
-        );
-
+      removeItem: (updatedCart, grandTotal) => {
         set((state) => ({
           ...state,
-          products: updatedProducts,
+          products: updatedCart,
           grandTotal,
         }));
+      },
+      clearCart: () => {
+        set({ cartId: null, userId: null, products: [], grandTotal: 0 });
+      },
+      setCart: (
+        cartId: string,
+        userId: string,
+        products: TCartItem[],
+        grandTotal: number
+      ) => {
+        set({ cartId, userId, products, grandTotal });
       },
     }),
     {

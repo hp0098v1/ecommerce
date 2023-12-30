@@ -91,7 +91,6 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
 
     return res.status(200).json({ message: "Logout successful!" });
@@ -211,7 +210,6 @@ const getCart = async (req, res) => {
 const createCart = async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log(userId);
     const { products, grandTotal } = req.body;
 
     const cart = await Cart.findOne({ userId }).exec();

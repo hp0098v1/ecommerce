@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { TUser, TProduct, TCategory } from "./index";
+import { TUser, TProduct, TCategory, TCart } from "./index";
 
 export type TGetProductsResponse = {
   products: TProduct[];
@@ -30,6 +30,16 @@ export type TLoginResponse = {
 export type TUserResponse = {
   user: TUser;
 };
+
+/* -------------------------------------------------------------------------- */
+/*                               Cart Responses                               */
+/* -------------------------------------------------------------------------- */
+export type TGetCartResponse = {
+  cart: TCart;
+};
+
+export type TCreateCartResponse = TGetCartResponse;
+export type TUpdateCartResponse = TGetCartResponse;
 
 // Axios Error
 export type TAxiosErrorResponse = AxiosError<{

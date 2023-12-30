@@ -1,17 +1,27 @@
 import { Link } from "react-router-dom";
 
+import { useAuthStore, useCartStore } from "@/lib/zustand";
+
 import CartList from "@/components/shared/Cart/CartList";
 import CartListHeader from "@/components/shared/Cart/CartListHeader";
 import CartSummary from "@/components/shared/Cart/CartSummary";
 import ContinueShopping from "@/components/shared/Cart/ContinueShopping";
 import CartSkeleton from "@/components/shared/Skeletons/CartSkeleton";
-import { useCartStore } from "@/lib/zustand";
+import { useGetCart } from "@/lib/react-query/queries";
+import { TCartItem } from "@/types";
 
 const Cart = () => {
-  const { products } = useCartStore();
-  const isLoading = false;
+  const { isLoggedIn } = useAuthStore();
+  let products: TCartItem[] = [];
+  const { products: productsStore } = useCartStore();
+  const { data, isLoading, isSuccess } = useGetCart(isLoggedIn);
 
   if (isLoading) return <CartSkeleton />;
+  if (isLoggedIn) {
+    if (isSuccess) products = data?.cart?.products;
+  } else {
+    products = productsStore;
+  }
 
   return (
     <section className="common-container mt-12">

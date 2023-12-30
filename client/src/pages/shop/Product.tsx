@@ -2,22 +2,24 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import ProductSkeleton from "@/components/shared/Skeletons/ProductSkeleton";
 import { Button } from "@/components/ui/button";
-import { useGetProductById } from "@/lib/react-query/queries";
+import { useGetProductById, useUpdateCart } from "@/lib/react-query/queries";
 import { IMAGE_BASE_URL } from "@/constants";
 import { useCartStore } from "@/lib/zustand";
+import { addToCart } from "@/lib/utils";
 
 const Product = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
 
   // Zustand
-  const { products, addItem } = useCartStore();
+  const { cartId, products, addItem } = useCartStore();
 
   // React Query
   const { data, isLoading, isError, error } = useGetProductById(
     productId || "",
     "categoryId"
   );
+  const { mutate } = useUpdateCart();
 
   const product = data?.product;
 
@@ -40,7 +42,10 @@ const Product = () => {
         quantity: 1,
         subtotal: product?.price,
       };
-      addItem(cartItem);
+      const [updatedCart, grandTotal] = addToCart(products, cartItem);
+      addItem(updatedCart, grandTotal);
+      if (cartId !== null)
+        mutate({ data: { products: updatedCart, grandTotal }, cartId: cartId });
     }
   };
 

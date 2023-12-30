@@ -1,9 +1,13 @@
+import { TCartItem } from "@/types";
 import { axiosApi, axiosApiWithAuth } from "../axios";
 import {
+  TCreateCartResponse,
+  TGetCartResponse,
   TGetCategoriesResponse,
   TGetProductByIdResponse,
   TGetProductsResponse,
   TLoginResponse,
+  TUpdateCartResponse,
   TUserResponse,
 } from "@/types/responseTypes";
 
@@ -86,5 +90,39 @@ export const logout = async () => {
 /* -------------------------------------------------------------------------- */
 export const getMe = async (): Promise<TUserResponse> => {
   const res = await axiosApiWithAuth.get<TUserResponse>("/users/me");
+  return res.data;
+};
+
+/* -------------------------------------------------------------------------- */
+/*                               Cart Functions                               */
+/* -------------------------------------------------------------------------- */
+export const getCart = async (): Promise<TGetCartResponse> => {
+  const res = await axiosApiWithAuth.get<TGetCartResponse>("/users/cart");
+  return res.data;
+};
+
+export const createCart = async (data: {
+  products: TCartItem[];
+  grandTotal: number;
+}): Promise<TCreateCartResponse> => {
+  const res = await axiosApiWithAuth.post<TGetCartResponse>(
+    "/users/cart",
+    data
+  );
+  return res.data;
+};
+
+export const updateCart = async (
+  data: {
+    products: TCartItem[];
+    grandTotal: number;
+  },
+  cartId: string
+): Promise<TUpdateCartResponse> => {
+  const res = await axiosApiWithAuth.put<TUpdateCartResponse>(
+    "/users/cart/" + cartId,
+    data
+  );
+
   return res.data;
 };
