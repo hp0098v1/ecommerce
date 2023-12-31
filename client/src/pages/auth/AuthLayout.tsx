@@ -1,8 +1,8 @@
-import { useAuthStore } from "@/lib/zustand/authStore";
-import { Link, Outlet, Navigate } from "react-router-dom";
+// import { useAuthStore } from "@/lib/zustand/authStore";
+import { Link, Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
-  const { isLoggedIn } = useAuthStore();
+  // const { isLoggedIn } = useAuthStore();
 
   return (
     <>

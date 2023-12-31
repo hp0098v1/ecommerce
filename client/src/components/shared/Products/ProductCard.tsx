@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-import { Product } from "@/types";
+import { TProduct } from "@/types";
 import { IMAGE_BASE_URL } from "@/constants";
 
 type ProductCardProps = {
-  product: Product;
+  product: TProduct;
 };
 
 const ProductCard = ({ product }: ProductCardProps) => {
