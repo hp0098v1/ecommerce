@@ -15,6 +15,7 @@ const getAllProducts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     let populateFields = [];
     const allowedFields = ["categoryId"];
+    const categories = req.query.categories;
 
     if (req.query.populate) {
       populateFields = req.query.populate
@@ -22,15 +23,33 @@ const getAllProducts = async (req, res) => {
         .filter((field) => allowedFields.includes(field));
     }
 
-    const products = await Product.find()
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate(populateFields);
+    let products = [];
+    let total = 0;
+
+    if (categories?.length === 0 || categories === undefined) {
+      products = await Product.find()
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate(populateFields);
+
+      total = await Product.countDocuments();
+    } else {
+      products = await Product.find({
+        categoryId: {
+          $in: categories,
+        },
+      })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate(populateFields);
+
+      total = await Product.countDocuments({
+        categoryId: { $in: categories },
+      });
+    }
 
     if (products.length === 0)
       return res.status(200).json({ message: "No Product found!" });
-
-    const total = await Product.countDocuments();
 
     res.status(200).json({
       products,
@@ -39,6 +58,7 @@ const getAllProducts = async (req, res) => {
       currentPage: page,
     });
   } catch (error) {
+    console.log(error);
     errorHandler(res, 400, error?.message);
   }
 };

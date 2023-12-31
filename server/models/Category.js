@@ -1,10 +1,15 @@
 // models/Category.js
 const mongoose = require("mongoose");
 
-const categorySchema = new mongoose.Schema({
-  name: String,
-  imageUrl: String,
-});
+const categorySchema = new mongoose.Schema(
+  {
+    name: String,
+    imageUrl: String,
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const Category = mongoose.model("Category", categorySchema);
 

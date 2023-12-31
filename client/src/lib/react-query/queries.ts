@@ -15,7 +15,7 @@ import {
   updateCart,
 } from "./queryFns";
 
-import { useAuthStore, useCartStore } from "../zustand";
+import { useAuthStore, useCartStore, useFiltersStore } from "../zustand";
 import { TAxiosErrorResponse, TGetCartResponse } from "@/types/responseTypes";
 import { useToast } from "@/components/ui/use-toast";
 import { TCartItem } from "@/types";
@@ -330,11 +330,14 @@ export const useGetCategories = () =>
     queryFn: getCategories,
   });
 
-export const useGetProducts = (page = 1, limit = 9, populate = "category") =>
-  useQuery({
-    queryKey: [QUERY_KEYS.PRODUCTS, page, limit],
-    queryFn: () => getProducts(page, limit, populate),
+export const useGetProducts = () => {
+  const { page, limit, populate, categories } = useFiltersStore();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCTS, page, limit, categories],
+    queryFn: () => getProducts(page, limit, populate, categories),
   });
+};
 
 export const useGetProductById = (productId: string, populate = "") =>
   useQuery({

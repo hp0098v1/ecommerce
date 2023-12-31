@@ -1,5 +1,6 @@
 import { useGetMe, useLogout } from "@/lib/react-query/queries";
-import { Link, Outlet } from "react-router-dom";
+import { useAuthStore } from "@/lib/zustand";
+import { Link, Navigate, Outlet } from "react-router-dom";
 
 const mockList = [
   {
@@ -21,6 +22,7 @@ const mockList = [
 
 const AccountLayout = () => {
   // Zustand
+  const { isLoggedIn } = useAuthStore();
 
   // React Query
   const { mutate } = useLogout();
@@ -33,7 +35,7 @@ const AccountLayout = () => {
     mutate();
   };
 
-  return (
+  return isLoggedIn ? (
     <div className="common-container mt-12">
       <h3 className="h3-semibold mb-12">My Profile</h3>
       <div className="grid gap-8 grid-cols-1 md:grid-cols-[30%_1fr]">
@@ -79,6 +81,8 @@ const AccountLayout = () => {
         </section>
       </div>
     </div>
+  ) : (
+    <Navigate to={"/"} />
   );
 };
 
