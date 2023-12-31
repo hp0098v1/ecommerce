@@ -18,7 +18,9 @@ const Cart = () => {
 
   if (isLoading) return <CartSkeleton />;
   if (isLoggedIn) {
-    if (isSuccess) products = data?.cart?.products;
+    if (isSuccess) {
+      products = data?.cart?.products;
+    }
   } else {
     products = productsStore;
   }
