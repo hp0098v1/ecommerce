@@ -24,7 +24,7 @@ const ProductsFilterSkeleton = () => {
           </div>
 
           {/* Sort By Skeleton */}
-          <div className="flex flex-col gap-4">
+          {/* <div className="flex flex-col gap-4">
             <h5 className="text-[15px] md:text-[18px] font-semibold">
               Sort By
             </h5>
@@ -40,7 +40,7 @@ const ProductsFilterSkeleton = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

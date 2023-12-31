@@ -1,10 +1,7 @@
 import { Checkbox } from "../../ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
 import { useFiltersStore } from "@/lib/zustand";
 import { useGetCategories } from "@/lib/react-query/queries";
 import ProductsFilterSkeleton from "../Skeletons/ProductsFilterSkeleton";
-
-const mockSort = ["Latest", "Oldest"];
 
 const ProductsFilter = () => {
   const { categories: categoriesInStore, setCategories } = useFiltersStore();
@@ -47,7 +44,7 @@ const ProductsFilter = () => {
         </ul>
       </div>
       {/* Sort By */}
-      <div className="flex flex-col gap-4">
+      {/* <div className="flex flex-col gap-4">
         <h5 className="text-[15px] md:text-[18px] font-semibold">Sort By</h5>
 
         <RadioGroup
@@ -66,7 +63,7 @@ const ProductsFilter = () => {
             </div>
           ))}
         </RadioGroup>
-      </div>
+      </div> */}
     </div>
   );
 };
