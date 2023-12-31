@@ -18,7 +18,6 @@ import {
 import { useAuthStore, useCartStore } from "../zustand";
 import { TAxiosErrorResponse, TGetCartResponse } from "@/types/responseTypes";
 import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
 import { TCartItem } from "@/types";
 import { axiosApiWithAuth } from "../axios";
 import { mergeProducts } from "../utils";
@@ -72,92 +71,95 @@ export const useLogin = () => {
   const { toast } = useToast();
 
   // Zustand
-  const { login, isLoggedIn } = useAuthStore();
+  const { login } = useAuthStore();
   const { products, grandTotal, setCart } = useCartStore();
 
   // React Query
-  const { data, isSuccess, isError, error } = useGetCart(isLoggedIn);
+  const { refetch } = useGetCart(false);
   const { mutateAsync: createCartMutateAsync } = useCreateCart();
   const { mutateAsync: updateCartMutateAsync } = useUpdateCart();
 
-  useEffect(() => {
-    const checkCart = async () => {
-      if (isError) {
-        if (error.response?.status === 404) {
-          await createCartMutateAsync({ grandTotal, products });
+  const checkCart = async (
+    data: TGetCartResponse | undefined,
+    isSuccess: boolean,
+    isError: boolean,
+    error: TAxiosErrorResponse | null
+  ) => {
+    if (isError && error !== null) {
+      if (error.response?.status === 404) {
+        await createCartMutateAsync({ grandTotal, products });
+        return navigate("/");
+      }
+    }
+
+    if (data !== undefined && isSuccess) {
+      // Zustand Cart is empty
+      // getCart response is empty or not empty (does not matter)
+      if (products.length !== 0) {
+        // Zustand Cart is not empty
+        // getCart response is empty
+        if (data.cart.products.length === 0) {
+          const res = await updateCartMutateAsync({
+            data: { products, grandTotal },
+            cartId: data.cart._id,
+          });
+
+          setCart(
+            res.cart._id,
+            res.cart.userId,
+            res.cart.products,
+            res.cart.grandTotal
+          );
+
           return navigate("/");
         }
-      }
+        // Zustand Cart is not empty
+        // getCart response is not empty
+        else {
+          const mergedCart = mergeProducts(data.cart.products, products);
 
-      if (isSuccess) {
-        // Zustand Cart is empty
-        // getCart response is empty or not empty (does not matter)
-        if (products.length !== 0) {
-          // Zustand Cart is not empty
-          // getCart response is empty
-          if (data.cart.products.length === 0) {
-            const res = await updateCartMutateAsync({
-              data: { products, grandTotal },
-              cartId: data.cart._id,
-            });
+          const grandTotal = mergedCart.reduce(
+            (acc, cur) => acc + cur.subtotal,
+            0
+          );
 
-            setCart(
-              res.cart._id,
-              res.cart.userId,
-              res.cart.products,
-              res.cart.grandTotal
-            );
+          const res = await updateCartMutateAsync({
+            data: { products: mergedCart, grandTotal },
+            cartId: data.cart._id,
+          });
 
-            return navigate("/");
-          }
-          // Zustand Cart is not empty
-          // getCart response is not empty
-          else {
-            const mergedCart = mergeProducts(data.cart.products, products);
-
-            const grandTotal = mergedCart.reduce(
-              (acc, cur) => acc + cur.subtotal,
-              0
-            );
-
-            const res = await updateCartMutateAsync({
-              data: { products: mergedCart, grandTotal },
-              cartId: data.cart._id,
-            });
-
-            setCart(
-              res.cart._id,
-              res.cart.userId,
-              res.cart.products,
-              res.cart.grandTotal
-            );
-            return navigate("/");
-          }
-        } else {
           setCart(
-            data.cart._id,
-            data.cart.userId,
-            data.cart.products,
-            data.cart.grandTotal
+            res.cart._id,
+            res.cart.userId,
+            res.cart.products,
+            res.cart.grandTotal
           );
           return navigate("/");
         }
+      } else {
+        setCart(
+          data.cart._id,
+          data.cart.userId,
+          data.cart.products,
+          data.cart.grandTotal
+        );
+        return navigate("/");
       }
-    };
-
-    if (isLoggedIn) checkCart();
-  }, [isSuccess, isError, error, isLoggedIn]);
+    }
+  };
 
   return useMutation({
     mutationKey: [QUERY_KEYS.LOGIN],
     mutationFn: loginFn,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast({
         title: "Success",
         description: "Login Successful",
       });
 
       login(data.user, data.accessToken);
+      const { data: resData, isSuccess, isError, error } = await refetch();
+      checkCart(resData, isSuccess, isError, error);
     },
     onError: (err) => {
       const error = err as TAxiosErrorResponse;
