@@ -154,7 +154,7 @@ const updateUser = async (req, res) => {
 
     // Update fields conditionally
     if (username) user.username = username;
-    if (email) user.email = email;
+    // if (email) user.email = email;
 
     // If updating the password, verify the current password and set the new one
     if (password) {
