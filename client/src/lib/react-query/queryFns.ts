@@ -27,13 +27,15 @@ export const getCategories = async (): Promise<TGetCategoriesResponse> => {
 export const getProducts = async (
   page: number,
   limit: number,
-  pupulate: string
+  pupulate: string,
+  categories: string[]
 ): Promise<TGetProductsResponse> => {
   const res = await axiosApi.get<TGetProductsResponse>("/products", {
     params: {
       page,
       limit,
       pupulate,
+      categories,
     },
   });
   const data = res.data;

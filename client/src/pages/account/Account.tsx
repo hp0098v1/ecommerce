@@ -50,7 +50,7 @@ const Account = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Email Address <span className="text-red-500">*</span>
+                Username <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
@@ -66,7 +66,22 @@ const Account = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Name <span className="text-red-500">*</span>
+                New Password <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Old Password <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input type="text" {...field} />

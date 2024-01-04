@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Products, Product, RootLayout, Cart } from "./shop";
 import { AuthLayout, CreateAccount, Login } from "./auth";
 import { Account, AccountLayout } from "./account";
+import NotFound from "./NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
         element: <AccountLayout />,
         children: [{ index: true, element: <Account /> }],
       },
+      { path: "*", element: <NotFound /> },
     ],
   },
   {

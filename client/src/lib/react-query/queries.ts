@@ -15,7 +15,7 @@ import {
   updateCart,
 } from "./queryFns";
 
-import { useAuthStore, useCartStore } from "../zustand";
+import { useAuthStore, useCartStore, useFiltersStore } from "../zustand";
 import { TAxiosErrorResponse, TGetCartResponse } from "@/types/responseTypes";
 import { useToast } from "@/components/ui/use-toast";
 import { TCartItem } from "@/types";
@@ -233,7 +233,7 @@ export const useGetCart = (enbaled: boolean) => {
   return useQuery<TGetCartResponse, TAxiosErrorResponse>({
     queryKey: [QUERY_KEYS.GET_CART, user?._id || ""],
     queryFn: getCart,
-    retry: false,
+    retry: 2,
     enabled: enbaled,
   });
 };
@@ -273,6 +273,7 @@ export const useUpdateCart = () => {
 
   // Zusrand
   const { user } = useAuthStore();
+  const { cartId, updateCart: updateCartInStore } = useCartStore();
 
   const clientQuery = useQueryClient();
 
@@ -288,13 +289,32 @@ export const useUpdateCart = () => {
       };
       cartId: string;
     }) => updateCart(data, cartId),
+    onMutate: async (variables) => {
+      await clientQuery.cancelQueries({
+        queryKey: [QUERY_KEYS.GET_CART, cartId],
+      });
+
+      const previousCart = clientQuery.getQueryData([
+        QUERY_KEYS.GET_CART,
+        cartId,
+      ]);
+
+      clientQuery.setQueryData([QUERY_KEYS.GET_CART, cartId], variables.data);
+      updateCartInStore(variables.data.products, variables.data.grandTotal);
+      return { previousCart, newCart: variables.data };
+    },
     onSuccess: async () => {
       await clientQuery.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_CART, user?._id || ""],
       });
     },
-    onError: (err) => {
+    onError: (err, _, context) => {
       const error = err as TAxiosErrorResponse;
+
+      clientQuery.setQueryData(
+        [QUERY_KEYS.GET_CART, cartId],
+        context?.previousCart
+      );
 
       toast({
         title: `Error (${error?.response?.data.status})`,
@@ -310,11 +330,14 @@ export const useGetCategories = () =>
     queryFn: getCategories,
   });
 
-export const useGetProducts = (page = 1, limit = 9, populate = "category") =>
-  useQuery({
-    queryKey: [QUERY_KEYS.PRODUCTS, page, limit],
-    queryFn: () => getProducts(page, limit, populate),
+export const useGetProducts = () => {
+  const { page, limit, populate, categories } = useFiltersStore();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCTS, page, limit, categories],
+    queryFn: () => getProducts(page, limit, populate, categories),
   });
+};
 
 export const useGetProductById = (productId: string, populate = "") =>
   useQuery({

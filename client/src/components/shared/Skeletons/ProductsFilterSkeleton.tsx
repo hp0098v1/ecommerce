@@ -1,8 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const ProductsSkeleton = () => {
+const ProductsFilterSkeleton = () => {
   return (
-    <section className="common-container flex flex-col 2xl:flex-row gap-8 2xl:gap-20">
+    <>
       {/* Filtering Section */}
       <div className="flex flex-col gap-4 md:gap-8 min-w-[240px] 2xl:mt-8">
         <div className="flex flex-col gap-4">
@@ -24,7 +24,7 @@ const ProductsSkeleton = () => {
           </div>
 
           {/* Sort By Skeleton */}
-          <div className="flex flex-col gap-4">
+          {/* <div className="flex flex-col gap-4">
             <h5 className="text-[15px] md:text-[18px] font-semibold">
               Sort By
             </h5>
@@ -40,28 +40,11 @@ const ProductsSkeleton = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
-
-      {/* Products Grid */}
-      <div className="flex-1 mt-8">
-        <Skeleton className="w-64 h-8 mb-8" />
-
-        {/* Grid Sys */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {Array.from(Array(6).keys()).map((i) => (
-            <div className="space-y-4" key={`products-grid-card-${i}`}>
-              <Skeleton className="h-64" />
-              <Skeleton className="h-6" />
-              <Skeleton className="h-3" />
-              <Skeleton className="h-3" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    </>
   );
 };
 
-export default ProductsSkeleton;
+export default ProductsFilterSkeleton;

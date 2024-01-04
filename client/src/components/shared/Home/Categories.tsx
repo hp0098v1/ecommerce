@@ -2,9 +2,15 @@ import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
 import { useGetCategories } from "@/lib/react-query/queries";
 import { IMAGE_BASE_URL } from "@/constants";
+import { useFiltersStore } from "@/lib/zustand";
 
 const Categories = () => {
   const { data, isLoading, isError, error } = useGetCategories();
+  const { setCategories } = useFiltersStore();
+
+  const setCategoriesHandler = (categories: string[]) => {
+    setCategories(categories);
+  };
 
   if (isError) return <div>Error: {error.message}</div>;
 
@@ -21,6 +27,7 @@ const Categories = () => {
         {data?.categories?.map((cate) => (
           <li key={cate.name}>
             <Link
+              onClick={() => setCategoriesHandler([cate._id])}
               to={"/products"}
               className="relative flex flex-col p-4 bg-gray"
             >
