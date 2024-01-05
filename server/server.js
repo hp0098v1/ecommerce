@@ -18,7 +18,7 @@ const port = process.env.PORT;
 
 app.use(
   cors({
-    origin: "https://ecommerce-hp0098v1.liara.run/",
+    origin: process.env.FRONTEND_URL,
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
     optionSuccessStatus: 200,
